@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Charity Events</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        body {
+            background: linear-gradient(180deg, #fdf6ec 0%, #f7e9d5 100%);
+            background-attachment: fixed;
+            color: #4a2c1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        nav {
+            background: linear-gradient(135deg, #7b1e2b 0%, #5a1420 100%);
+            padding: 0.9rem 2rem;
+            box-shadow: 0 3px 14px rgba(122,30,43,0.35);
+            border-bottom: 3px solid #d4a017;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav a {
+            color: #fdf6ec;
+            margin-right: 24px;
+            text-decoration: none;
+            font-size: 0.98rem;
+            font-weight: 500;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.25s, border-color 0.25s;
+        }
+        nav a:hover {
+            color: #f5c518;
+            border-bottom-color: #f5c518;
+        }
+        .container-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 26px 18px 50px;
+        }
+        h1 {
+            color: #7b1e2b;
+            margin-bottom: 18px;
+            font-size: 1.5rem;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #d4a017;
+            display: inline-block;
+        }
+        form {
+            background: #ffffff;
+            padding: 22px 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 22px rgba(122,30,43,0.12);
+            margin-bottom: 24px;
+            border-left: 5px solid #d4a017;
+            border-top: 1px solid #f0e0c8;
+        }
+        .form-item {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #7b1e2b;
+            font-size: 0.9rem;
+        }
+        input, select {
+            width: 100%;
+            max-width: 400px;
+            padding: 9px 12px;
+            border: 1.5px solid #e8d5b5;
+            border-radius: 7px;
+            font-size: 0.92rem;
+            background: #fdf6ec;
+            color: #4a2c1a;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        input::placeholder {
+            color: #a8896a;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #d4a017;
+            box-shadow: 0 0 0 3px rgba(212,160,23,0.2);
+            background: #ffffff;
+        }
+        button {
+            padding: 9px 20px;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.92rem;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: 600;
+            transition: background 0.25s, transform 0.15s;
+        }
+        button[type="submit"] {
+            background: linear-gradient(135deg, #7b1e2b 0%, #5a1420 100%);
+            color: #fdf6ec;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+            color: #4a2c1a;
+            transform: translateY(-1px);
+        }
+        #btnClear {
+            background-color: #c9b28f;
+            color: #4a2c1a;
+        }
+        #btnClear:hover {
+            background-color: #b39a72;
+        }
+        #msgArea {
+            color: #7b1e2b;
+            font-weight: 600;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            padding: 10px 14px;
+            background: #fdf0f0;
+            border-radius: 7px;
+            border-left: 4px solid #7b1e2b;
+            display: none;
+        }
+        #msgArea.show {
+            display: block;
+        }
+        #resultList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .event-card {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(122,30,43,0.1);
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+            border: 1px solid #f0e0c8;
+            border-top: 3px solid #d4a017;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 26px rgba(122,30,43,0.18);
+            border-top-color: #7b1e2b;
+        }
+        .event-card h4 {
+            color: #7b1e2b;
+            margin-bottom: 8px;
+            font-size: 0.96rem;
+        }
+        .event-card p {
+            color: #6b4a35;
+            margin: 4px 0;
+            font-size: 0.85rem;
+        }
+        .event-card p strong {
+            color: #4a2c1a;
+        }
+        .event-card a {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #7b1e2b 0%, #5a1420 100%);
+            color: #fdf6ec;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: background 0.25s, transform 0.15s;
+        }
+        .event-card a:hover {
+            background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+            color: #4a2c1a;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="home.html">Home</a>
+    <a href="search.html">Search Events</a>
+</nav>
+<div class="container-wrap">
+    <h1>Search for Charity Events</h1>
+
+    <form id="searchForm">
+        <div class="form-item">
+            <label for="inpDate">Date:</label>
+            <input type="date" id="inpDate">
+        </div>
+        <div class="form-item">
+            <label for="inpLocation">Location:</label>
+            <input type="text" id="inpLocation" placeholder="Enter location">
+        </div>
+        <div class="form-item">
+            <label for="selCategory">Category:</label>
+            <select id="selCategory">
+                <option value="">-- All Categories --</option>
+            </select>
+        </div>
+        <button type="submit">Search</button>
+        <button type="button" id="btnClear">Clear Filters</button>
+    </form>
+
+    <div id="msgArea"></div>
+    <div id="resultList"></div>
+</div>
+
+<script>
+    const msgArea = document.getElementById("msgArea");
+    const resultList = document.getElementById("resultList");
+
+    function showMsg(text) {
+        msgArea.innerText = text;
+        msgArea.classList.add("show");
+    }
+    function clearMsg() {
+        msgArea.innerText = "";
+        msgArea.classList.remove("show");
+    }
+
+    fetch("http://localhost:3001/api/categories")
+    .then(r => r.json())
+    .then(cats => {
+        const sel = document.getElementById("selCategory");
+        cats.forEach(c => {
+            let opt = document.createElement("option");
+            opt.value = c.category_id;
+            opt.innerText = c.category_name;
+            sel.appendChild(opt);
+        });
+    })
+    .catch(() => showMsg("Failed to load categories. Please try again later."));
+
+    document.getElementById("btnClear").addEventListener("click", () => {
+        document.getElementById("searchForm").reset();
+        resultList.innerHTML = "";
+        clearMsg();
+    });
+
+    document.getElementById("searchForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        clearMsg();
+
+        const date = document.getElementById("inpDate").value;
+        const location = document.getElementById("inpLocation").value;
+        const catId = document.getElementById("selCategory").value;
+
+        let url = new URL("http://localhost:3001/api/events/search");
+        if (date) url.searchParams.append("date", date);
+        if (location) url.searchParams.append("location", location);
+        if (catId) url.searchParams.append("categoryId", catId);
+
+        fetch(url)
+        .then(res => {
+            if (!res.ok) throw new Error("Search request failed");
+            return res.json();
+        })
+        .then(data => {
+            resultList.innerHTML = "";
+            if (data.length === 0) {
+                showMsg("No matching events found.");
+                return;
+            }
+            data.forEach(evt => {
+                const card = document.createElement("div");
+                card.className = "event-card";
+                card.innerHTML = `
+                    <h4>${evt.event_name}</h4>
+                    <p><strong>Category:</strong> ${evt.category_name}</p>
+                    <p><strong>Location:</strong> ${evt.location}</p>
+                    <p><strong>Date:</strong> ${new Date(evt.event_date).toLocaleString()}</p>
+                    <a href="detail.html?id=${evt.event_id}">View Details</a>
+                `;
+                resultList.appendChild(card);
+            });
+        })
+        .catch(() => showMsg("An error occurred while searching. Please try again."));
+    });
+</script>
+</body>
+</html>

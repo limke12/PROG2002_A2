@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Detail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        body {
+            background: linear-gradient(180deg, #fdf6ec 0%, #f7e9d5 100%);
+            background-attachment: fixed;
+            color: #4a2c1a;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        nav {
+            background: linear-gradient(135deg, #7b1e2b 0%, #5a1420 100%);
+            padding: 0.9rem 2rem;
+            box-shadow: 0 3px 14px rgba(122,30,43,0.35);
+            border-bottom: 3px solid #d4a017;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav a {
+            color: #fdf6ec;
+            margin-right: 24px;
+            text-decoration: none;
+            font-size: 0.98rem;
+            font-weight: 500;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.25s, border-color 0.25s;
+        }
+        nav a:hover {
+            color: #f5c518;
+            border-bottom-color: #f5c518;
+        }
+        .container-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 26px 18px 50px;
+        }
+        .detail-box {
+            background: #ffffff;
+            padding: 28px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 26px rgba(122,30,43,0.15);
+            border-left: 5px solid #d4a017;
+            border-top: 1px solid #f0e0c8;
+        }
+        .detail-box h1 {
+            color: #7b1e2b;
+            margin-bottom: 16px;
+            font-size: 1.55rem;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #d4a017;
+        }
+        .detail-box h3 {
+            color: #7b1e2b;
+            margin: 20px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #f0e0c8;
+            font-size: 1.05rem;
+        }
+        .detail-box p {
+            margin-bottom: 9px;
+            font-size: 0.95rem;
+            color: #6b4a35;
+        }
+        .detail-box p strong {
+            color: #4a2c1a;
+        }
+        #registerBtn {
+            margin-top: 22px;
+            padding: 11px 28px;
+            background: linear-gradient(135deg, #7b1e2b 0%, #5a1420 100%);
+            color: #fdf6ec;
+            border: none;
+            border-radius: 9px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.25s, transform 0.15s, box-shadow 0.25s;
+            box-shadow: 0 4px 14px rgba(122,30,43,0.3);
+            letter-spacing: 0.3px;
+        }
+        #registerBtn:hover {
+            background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+            color: #4a2c1a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(212,160,23,0.4);
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="home.html">Home</a>
+    <a href="search.html">Search Events</a>
+</nav>
+<div class="container-wrap">
+    <div class="detail-box" id="detailContent"></div>
+    <button id="registerBtn">Register</button>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get('id');
+
+    fetch(`http://localhost:3001/api/events/${eventId}`)
+    .then(res => {
+        if (!res.ok) throw new Error("Event not found");
+        return res.json();
+    })
+    .then(evt => {
+        const priceText = Number(evt.ticket_price) === 0
+            ? "Free"
+            : "$" + Number(evt.ticket_price).toFixed(2);
+
+        const cont = document.getElementById("detailContent");
+        cont.innerHTML = `
+            <h1>${evt.event_name}</h1>
+            <p><strong>Category:</strong> ${evt.category_name}</p>
+            <p><strong>Date &amp; Time:</strong> ${new Date(evt.event_date).toLocaleString()}</p>
+            <p><strong>Location:</strong> ${evt.location}</p>
+            <p><strong>Hosted by:</strong> ${evt.org_name} (${evt.contact_info || 'N/A'})</p>
+
+            <h3>Purpose &amp; Description</h3>
+            <p>${evt.description}</p>
+
+            <h3>Ticket Information</h3>
+            <p><strong>Ticket Price:</strong> ${priceText}</p>
+
+            <h3>Goal vs. Progress</h3>
+            <p><strong>Charity Goal:</strong> $${Number(evt.charity_goal).toFixed(2)}</p>
+            <p><strong>Current Progress:</strong> $${Number(evt.current_progress).toFixed(2)}</p>
+        `;
+    })
+    .catch(() => {
+        document.getElementById("detailContent").innerText = "Cannot load this event.";
+    });
+
+    document.getElementById("registerBtn").addEventListener("click", () => {
+        alert("This feature is currently under construction.");
+    });
+</script>
+</body>
+</html>

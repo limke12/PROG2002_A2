@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charity Events | Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        body {
+            background: linear-gradient(180deg, #fdf6ec 0%, #f7e9d5 100%);
+            background-attachment: fixed;
+            color: #4a2c1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        nav {
+            background: linear-gradient(135deg, #7b1e2b 0%, #5a1420 100%);
+            padding: 0.9rem 2rem;
+            box-shadow: 0 3px 14px rgba(122,30,43,0.35);
+            border-bottom: 3px solid #d4a017;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav a {
+            color: #fdf6ec;
+            margin-right: 24px;
+            text-decoration: none;
+            font-size: 0.98rem;
+            font-weight: 500;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.25s, border-color 0.25s;
+        }
+        nav a:hover {
+            color: #f5c518;
+            border-bottom-color: #f5c518;
+        }
+        .container-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 26px 18px 50px;
+        }
+        header {
+            background: linear-gradient(135deg, #ffffff 0%, #fdf6ec 100%);
+            padding: 24px 26px;
+            border-radius: 12px;
+            box-shadow: 0 6px 22px rgba(122,30,43,0.12);
+            margin-bottom: 26px;
+            border-left: 5px solid #d4a017;
+            border-top: 1px solid #f0e0c8;
+        }
+        header h1 {
+            color: #7b1e2b;
+            margin-bottom: 10px;
+            font-size: 1.55rem;
+            letter-spacing: 0.3px;
+        }
+        header p {
+            font-size: 0.95rem;
+            margin: 5px 0;
+            color: #6b4a35;
+        }
+        h2 {
+            color: #7b1e2b;
+            margin-bottom: 18px;
+            font-size: 1.25rem;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #d4a017;
+            display: inline-block;
+        }
+        #eventList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .event-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 16px rgba(122,30,43,0.1);
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+            border: 1px solid #f0e0c8;
+            border-top: 3px solid #d4a017;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 26px rgba(122,30,43,0.18);
+            border-top-color: #7b1e2b;
+        }
+        .event-card h3 {
+            color: #7b1e2b;
+            margin-bottom: 8px;
+            font-size: 0.98rem;
+        }
+        .event-card p {
+            margin: 4px 0;
+            color: #6b4a35;
+            font-size: 0.85rem;
+        }
+        .event-card p strong {
+            color: #4a2c1a;
+        }
+        .event-card a {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #7b1e2b 0%, #5a1420 100%);
+            color: #fdf6ec;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: background 0.25s, transform 0.15s;
+        }
+        .event-card a:hover {
+            background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+            color: #4a2c1a;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="home.html">Home</a>
+    <a href="search.html">Search Events</a>
+</nav>
+<div class="container-wrap">
+    <header>
+        <h1>Community Care Charity</h1>
+        <p>Mission: Raise funds and awareness for local community support work.</p>
+        <p>Contact: contact@communitycare.org</p>
+    </header>
+
+    <h2>Upcoming Charity Events</h2>
+    <div id="eventList"></div>
+</div>
+
+<script>
+    fetch("http://localhost:3001/api/events/home")
+    .then(res => res.json())
+    .then(events => {
+        const container = document.getElementById("eventList");
+        events.forEach(evt => {
+            const div = document.createElement('div');
+            div.className = "event-card";
+            div.innerHTML = `
+                <h3>${evt.event_name}</h3>
+                <p><strong>Category:</strong> ${evt.category_name}</p>
+                <p><strong>Location:</strong> ${evt.location}</p>
+                <p><strong>Date:</strong> ${new Date(evt.event_date).toLocaleString()}</p>
+                <a href="detail.html?id=${evt.event_id}">View Event Details</a>
+            `;
+            container.appendChild(div);
+        });
+    })
+    .catch(err => console.error("Load home events error", err));
+</script>
+</body>
+</html>
